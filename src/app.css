@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+main {
+	flex-direction: column;
+	flex-grow: 1;
+	height: 100%;
+}

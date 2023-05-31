@@ -1,2 +1,10 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+</script>
+
+<svelte:head>
+	<title>Memo card game built with SvelteKit + DaisyUI + TailwindCSS!</title>
+</svelte:head>
+
+<html lang="en">
+	<p class="text-primary">React Sux</p>
+</html>
