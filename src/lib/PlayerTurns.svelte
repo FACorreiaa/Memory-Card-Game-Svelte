@@ -1,14 +1,19 @@
 <script lang="ts">
-	type PlayerTurnsType = {
-		playerOneName: string;
-		playerTwoName: string;
+	type PlayerOneType = {
+		playerOnePoint: number;
 		playerOneTurn: number;
-		playerOnePoints: number;
-		playerTwoTurn: number;
-		playerTwoPoints: number;
 	};
 
-	export let PlayerData: PlayerTurnsType;
+	type PlayerTwoType = {
+		playerTwoPoint: number;
+		playerTwoTurn: number;
+	};
+
+	export let playerOneName: string;
+	export let playerTwoName: string;
+
+	export let playerOneStats: PlayerOneType;
+	export let playerTwoStats: PlayerTwoType;
 </script>
 
 <html lang="en">
@@ -16,19 +21,19 @@
 		<div class="row">
 			<div class="column">
 				<div class="player-container">
-					<h5 class="player-title">{PlayerData.playerOneName}</h5>
+					<h5 class="player-title">{playerOneName}</h5>
 					<div>
-						<span>Turns: {PlayerData.playerOneTurn}</span>
-						<span>Points: {PlayerData.playerOnePoints}</span>
+						<span>Turns: {playerOneStats.playerOneTurn}</span>
+						<span>Points: {playerOneStats.playerOnePoint}</span>
 					</div>
 				</div>
 			</div>
 			<div class="column">
 				<div class="player-container">
-					<h5 class="player-title">{PlayerData.playerTwoName}</h5>
+					<h5 class="player-title">{playerTwoName}</h5>
 					<div>
-						<span>Turns: {PlayerData.playerTwoName}</span>
-						<span>Points: {PlayerData.playerTwoPoints}</span>
+						<span>Turns: {playerTwoStats.playerTwoTurn}</span>
+						<span>Points: {playerTwoStats.playerTwoPoint}</span>
 					</div>
 				</div>
 			</div>

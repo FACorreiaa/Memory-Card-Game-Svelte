@@ -1,10 +1,12 @@
 <script>
 </script>
 
-<main />
+<div class="board">
+	<slot />
+</div>
 
 <style lang="postcss">
-	main {
+	.board {
 		padding: 20px;
 		margin-top: 40px;
 		display: grid;

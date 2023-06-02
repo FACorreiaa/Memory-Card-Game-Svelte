@@ -1,9 +1,10 @@
 <script lang="ts">
 	export let label: string;
+	export let onClick: () => void;
 </script>
 
 <html lang="en">
-	<button class="btn btn-primary">{label}</button>
+	<button on:click|once={onClick} class="btn btn-primary">{label}</button>
 </html>
 
 <style lang="postcss">

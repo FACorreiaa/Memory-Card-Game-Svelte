@@ -5,22 +5,18 @@
 		matched: boolean;
 	};
 
-	type CardPropsType = {
-		card: CardObjectType;
-		onHandleCardClick: (card: CardObjectType) => void;
-		flipped: boolean;
-		disabled: boolean;
-	};
-
-	export let cardProps: CardPropsType;
+	export let card: CardObjectType;
+	export let onHandleCardClick: (card: CardObjectType) => void;
+	export let flipped: boolean;
+	export let disabled: boolean;
 	// export let card: CardObjectType;
 	// export let onHandleCardClick: (card: CardObjectType) => void;
 	// export let flipped: boolean;
 	// export let disabled: boolean;
 
 	const handleClick = () => {
-		if (!cardProps.disabled) {
-			cardProps.onHandleCardClick(cardProps.card);
+		if (!disabled) {
+			onHandleCardClick(card);
 		}
 	};
 </script>
@@ -28,9 +24,9 @@
 <html lang="">
 	<div class="card-container">
 		<div class="card-wrapper">
-			<div class={cardProps.flipped ? 'flipped' : ''}>
+			<div class={flipped ? 'flipped' : ''}>
 				<!-- svelte-ignore a11y-img-redundant-alt -->
-				<img class="front" src={cardProps.card.src} alt="card image" />
+				<img class="front" src={card.src} alt="card image" />
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<img class="back" src={'/img/cover.jpeg'} alt="card cover" on:click|once={handleClick} />
 			</div>
