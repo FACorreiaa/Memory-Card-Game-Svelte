@@ -8,7 +8,7 @@
 	<Header />
 </header>
 
-<main class="flex-grow flex-col h-full" data-theme="cyberpunk">
+<main class="flex h-full p-5 overflow-y-auto text-center" data-theme="cyberpunk">
 	<slot />
 </main>
 
@@ -17,9 +17,4 @@
 </footer>
 
 <style>
-	main {
-		flex: 1;
-		padding: 15px;
-		overflow-y: auto;
-	}
 </style>

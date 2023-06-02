@@ -13,6 +13,9 @@
 		font-weight: normal;
 		cursor: pointer;
 		font-size: 1em;
+		margin-bottom: 20px;
+		margin-left: 10px;
+		border: none;
 	}
 
 	button:hover {
