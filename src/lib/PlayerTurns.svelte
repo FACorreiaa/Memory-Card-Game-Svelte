@@ -14,6 +14,9 @@
 
 	export let playerOneStats: PlayerOneType;
 	export let playerTwoStats: PlayerTwoType;
+
+	export let isPlayerOneTurn: boolean;
+	export let isPlayerTwoTurn: boolean;
 </script>
 
 <html lang="en">
@@ -38,6 +41,16 @@
 				</div>
 			</div>
 		</div>
+		{#if isPlayerOneTurn}
+			<div class="player-turn">PLAYER ONE TURN</div>
+		{:else}
+			<div />
+		{/if}
+		{#if isPlayerTwoTurn}
+			<div class="player-turn">PLAYER TWO TURN</div>
+		{:else}
+			<div />
+		{/if}
 	</div>
 </html>
 
@@ -71,5 +84,14 @@
 		flex-direction: column;
 		flex: 1;
 		align-items: center;
+	}
+
+	.player-turn {
+		margin: 20px;
+		font-size: 30px;
+		font-weight: bold;
+		background: -webkit-linear-gradient(#eee, #333);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
 	}
 </style>

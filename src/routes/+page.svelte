@@ -36,9 +36,9 @@
 	const allCardsUp = $cards?.every((card) => card.matched === true);
 	const renderButtonMessage = $gameStatus === GAME_STATE.GAME_OFF ? 'Start Game' : 'Reset Game';
 
-	let isGameOff = $gameStatus === GAME_STATE.GAME_OFF;
+	$: isGameOff = $gameStatus === GAME_STATE.GAME_OFF;
 	console.log('isGameOff', isGameOff);
-	console.log('$playerTurn', $playerTurn);
+	console.log('$playerTurndd', $playerTurn);
 
 	// let gameStatus; // Assign the value of the gameStatus store
 	// $gameStatus.subscribe(value => {
@@ -47,7 +47,7 @@
 
 	const onHandleStartButton = () => {
 		gameStatus.set(GAME_STATE.ON_GOING);
-
+		console.log($gameStatus);
 		const shuffledCardList = [...cardImages, ...cardImages]
 			.sort(() => Math.random() - 0.5)
 			.map((card) => ({
@@ -59,6 +59,7 @@
 		cards.set(shuffledCardList);
 		playerOne.update(() => ({ playerOneTurn: 0, playerOnePoint: 0 }));
 		playerTwo.update(() => ({ playerTwoTurn: 0, playerTwoPoint: 0 }));
+		console.log('gameStatus', $gameStatus);
 	};
 
 	const onHandleCardClick = (card: CardObjectType) => {
@@ -92,36 +93,19 @@
 		disabled.set(false);
 	};
 
-	// const validateTurn = (currentPlayer) => {
-	// 	const { choiceOne, choiceTwo } = $choices;
-
-	// 	if (choiceOne && choiceTwo) {
-	// 		disabled.set(true);
-
-	// 		if (choiceOne.src === choiceTwo.src) {
-	// 			if (currentPlayer === PLAYER_TURN.PLAYER_ONE) {
-	// 				playerOne.update((state) => ({ ...state, playerOnePoint: state.playerOnePoint + 1 }));
-	// 			} else if (currentPlayer === PLAYER_TURN.PLAYER_TWO) {
-	// 				playerTwo.update((state) => ({ ...state, playerTwoPoint: state.playerTwoPoint + 1 }));
-	// 			}
-
-	// 			validateMatchedCards();
-	// 			handleNextTurn();
-	// 		} else {
-	// 			playerTurn.set(PLAYER_TURN.PLAYER_TWO);
-	// 			setTimeout(() => handleNextTurn(), 500);
-	// 		}
-	// 	}
-	// };
-
-	const validatePlayerOneTurn = () => {
+	const validateTurn = (currentPlayer) => {
 		const { choiceOne, choiceTwo } = $choices;
 
 		if (choiceOne && choiceTwo) {
 			disabled.set(true);
 
 			if (choiceOne.src === choiceTwo.src) {
-				playerOne.update((state) => ({ ...state, playerOnePoint: state.playerOnePoint + 1 }));
+				if (currentPlayer === PLAYER_TURN.PLAYER_ONE) {
+					playerOne.update((state) => ({ ...state, playerOnePoint: state.playerOnePoint + 1 }));
+				} else if (currentPlayer === PLAYER_TURN.PLAYER_TWO) {
+					playerTwo.update((state) => ({ ...state, playerTwoPoint: state.playerTwoPoint + 1 }));
+				}
+
 				validateMatchedCards();
 				handleNextTurn();
 			} else {
@@ -131,28 +115,11 @@
 		}
 	};
 
-	const validatePlayerTwoTurn = () => {
-		const { choiceOne, choiceTwo } = $choices;
-
-		if (choiceOne && choiceTwo) {
-			disabled.set(true);
-
-			if (choiceOne.src === choiceTwo.src) {
-				playerTwo.update((state) => ({ ...state, playerTwoPoint: state.playerTwoPoint + 1 }));
-				validateMatchedCards();
-				handleNextTurn();
-			} else {
-				playerTurn.set(PLAYER_TURN.PLAYER_ONE);
-				setTimeout(() => handleNextTurn(), 500);
-			}
-		}
-	};
-
 	function updateTurn() {
 		if ($playerTurn === PLAYER_TURN.PLAYER_ONE) {
-			validatePlayerOneTurn();
+			validateTurn(PLAYER_TURN.PLAYER_ONE);
 		} else {
-			validatePlayerTwoTurn();
+			validateTurn(PLAYER_TURN.PLAYER_TWO);
 		}
 	}
 
@@ -163,51 +130,18 @@
 		playerTwo.set({ playerTwoPoint: 0, playerTwoTurn: null });
 	};
 
-	// onMount(() => {
-	// 	const unsubscribe = choices.subscribe(({ choiceOne, choiceTwo }) => {
-	// 		if (choiceOne && choiceTwo) {
-	// 			disabled.set(true);
-	// 			if ($playerTurn === PLAYER_TURN.PLAYER_ONE) {
-	// 				playerOne.update((state) => ({ ...state, playerOneTurn: state.playerOneTurn + 1 }));
-	// 				validateMatchedCards();
-	// 				handleNextTurn();
-	// 			} else {
-	// 				playerTwo.update((state) => ({ ...state, playerTwoTurn: state.playerTwoTurn + 1 }));
-	// 				validateMatchedCards();
-	// 				handleNextTurn();
-	// 			}
-	// 		}
-	// 	});
+	onMount(() => {
+		// Initial effect
+		console.log('choices', $choices);
+		console.log('cards', $cards);
+		updateTurn();
+	});
 
-	// 	return unsubscribe;
-	// });
-
-	// afterUpdate(() => {
-	// 	const { choiceOne, choiceTwo } = $choices;
-	// 	if (choiceOne && choiceTwo) {
-	// 		disabled.set(true);
-	// 		if ($playerTurn === PLAYER_TURN.PLAYER_ONE) {
-	// 			playerOne.update((state) => ({ ...state, playerOnePoints: state.playerOnePoint + 1 }));
-	// 			validateMatchedCards();
-	// 			handleNextTurn();
-	// 		} else {
-	// 			playerTwo.update((state) => ({ ...state, playerTwoPoints: state.playerTwoPoint + 1 }));
-	// 			validateMatchedCards();
-	// 			handleNextTurn();
-	// 		}
-	// 	}
-	// });
-	// onMount(() => {
-	// 	// Initial effect
-	// 	console.log('choices', $choices);
-	// 	console.log('cards', $cards);
-	// 	updateTurn();
-	// });
-
-	// afterUpdate(() => {
-	// 	// Effect when choiceOne or choiceTwo changes
-	// 	updateTurn();
-	// });
+	afterUpdate(() => {
+		// Effect when choiceOne or choiceTwo changes
+		updateTurn();
+	});
+	console.log('isGameOff', isGameOff);
 </script>
 
 <svelte:head>
@@ -227,6 +161,10 @@
 			playerTwoName="Player Two"
 			playerOneStats={$playerOne}
 			playerTwoStats={$playerTwo}
+			isPlayerOneTurn={$playerTurn === PLAYER_TURN.PLAYER_ONE &&
+				$gameStatus === GAME_STATE.ON_GOING}
+			isPlayerTwoTurn={$playerTurn === PLAYER_TURN.PLAYER_TWO &&
+				$gameStatus === GAME_STATE.ON_GOING}
 		/>
 		{#if isGameOff}
 			<h4>Press Start and train your memory!</h4>
