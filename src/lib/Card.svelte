@@ -21,18 +21,16 @@
 	};
 </script>
 
-<html lang="">
-	<div class="card-container">
-		<div class="card-wrapper">
-			<div class={flipped ? 'flipped' : ''}>
-				<!-- svelte-ignore a11y-img-redundant-alt -->
-				<img class="front" src={card.src} alt="card image" />
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<img class="back" src={'/img/cover.jpeg'} alt="card cover" on:click|once={handleClick} />
-			</div>
+<div class="card-container">
+	<div class="card-wrapper">
+		<div class={flipped ? 'flipped' : ''}>
+			<!-- svelte-ignore a11y-img-redundant-alt -->
+			<img class="front" src={card.src} alt="card image" />
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<img class="back" src={'/img/cover.jpeg'} alt="card cover" on:click|once={handleClick} />
 		</div>
 	</div>
-</html>
+</div>
 
 <style lang="postcss">
 	.card-container {

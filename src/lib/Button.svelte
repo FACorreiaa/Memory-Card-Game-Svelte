@@ -3,9 +3,7 @@
 	export let onClick: () => void;
 </script>
 
-<html lang="en">
-	<button on:click|once={onClick} class="btn btn-primary">{label}</button>
-</html>
+<button on:click|once={onClick} class="btn btn-primary">{label}</button>
 
 <style lang="postcss">
 	button {

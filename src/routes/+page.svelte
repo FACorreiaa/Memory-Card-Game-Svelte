@@ -1,15 +1,18 @@
 <script lang="ts">
 	import {
-		playerOne,
-		playerTwo,
 		cards,
-		choices,
 		disabled,
 		gameStatus,
 		playerTurn,
 		GAME_STATE,
 		PLAYER_TURN,
-		type CardObjectType
+		type CardObjectType,
+		choiceTwo,
+		choiceOne,
+		playerOneTurn,
+		playerOnePoint,
+		playerTwoPoint,
+		playerTwoTurn
 	} from '../store/store.js';
 	import { onMount, afterUpdate } from 'svelte';
 
@@ -31,14 +34,14 @@
 		{ src: '/img/yoko.jpg', matched: false }
 	];
 
-	let { playerOnePoint, playerOneTurn } = $playerOne;
-	let { playerTwoPoint, playerTwoTurn } = $playerTwo;
-	const allCardsUp = $cards?.every((card) => card.matched === true);
-	const renderButtonMessage = $gameStatus === GAME_STATE.GAME_OFF ? 'Start Game' : 'Reset Game';
-
+	$: allCardsUp = $cards?.every((card) => card.matched === true);
+	$: renderButtonMessage = $gameStatus === GAME_STATE.GAME_OFF ? 'Start Game' : 'Reset Game';
 	$: isGameOff = $gameStatus === GAME_STATE.GAME_OFF;
-	console.log('isGameOff', isGameOff);
-	console.log('$playerTurndd', $playerTurn);
+	$: isPlayerOneTurn =
+		$playerTurn === PLAYER_TURN.PLAYER_ONE && $gameStatus === GAME_STATE.ON_GOING;
+
+	$: isPlayerTwoTurn =
+		$playerTurn === PLAYER_TURN.PLAYER_TWO && $gameStatus === GAME_STATE.ON_GOING;
 
 	// let gameStatus; // Assign the value of the gameStatus store
 	// $gameStatus.subscribe(value => {
@@ -47,7 +50,6 @@
 
 	const onHandleStartButton = () => {
 		gameStatus.set(GAME_STATE.ON_GOING);
-		console.log($gameStatus);
 		const shuffledCardList = [...cardImages, ...cardImages]
 			.sort(() => Math.random() - 0.5)
 			.map((card) => ({
@@ -55,23 +57,23 @@
 				id: Math.random()
 			}));
 
-		choices.update(() => ({ choiceOne: null, choiceTwo: null }));
+		choiceOne.set(null);
+		choiceTwo.set(null);
 		cards.set(shuffledCardList);
-		playerOne.update(() => ({ playerOneTurn: 0, playerOnePoint: 0 }));
-		playerTwo.update(() => ({ playerTwoTurn: 0, playerTwoPoint: 0 }));
-		console.log('gameStatus', $gameStatus);
+		playerOneTurn.set(0);
+		playerTwoTurn.set(0);
+		playerOnePoint.set(0);
+		playerTwoPoint.set(0);
 	};
 
 	const onHandleCardClick = (card: CardObjectType) => {
-		$choices.choiceOne
-			? choices.set({ choiceOne: null, choiceTwo: card })
-			: choices.set({ choiceOne: card, choiceTwo: null });
+		$choiceOne ? choiceTwo.set(card) : choiceOne.set(card);
 	};
 
 	const validateMatchedCards = () => {
 		cards.update((prevState) => {
 			return prevState.map((card) => {
-				if (card.src === $choices.choiceOne?.src) {
+				if (card.src === $choiceOne?.src) {
 					return { ...card, matched: true };
 				} else {
 					return card;
@@ -81,29 +83,27 @@
 	};
 
 	const handleNextTurn = () => {
-		choices.set({ choiceOne: null, choiceTwo: null });
-
-		if ($playerTurn === PLAYER_TURN.PLAYER_ONE) {
-			playerOne.update((state) => ({ ...state, playerOneTurn: state.playerOneTurn + 1 }));
+		choiceOne.set(null);
+		choiceTwo.set(null);
+		if (isPlayerOneTurn) {
+			playerOneTurn.update((state) => (state += 1));
 			playerTurn.set(PLAYER_TURN.PLAYER_TWO);
 		} else {
-			playerTwo.update((state) => ({ ...state, playerTwoTurn: state.playerTwoTurn + 1 }));
+			playerTwoTurn.update((state) => (state += 1));
 			playerTurn.set(PLAYER_TURN.PLAYER_ONE);
 		}
 		disabled.set(false);
 	};
 
 	const validateTurn = (currentPlayer) => {
-		const { choiceOne, choiceTwo } = $choices;
-
-		if (choiceOne && choiceTwo) {
+		if ($choiceOne && $choiceTwo) {
 			disabled.set(true);
 
-			if (choiceOne.src === choiceTwo.src) {
+			if ($choiceOne?.src === $choiceTwo?.src) {
 				if (currentPlayer === PLAYER_TURN.PLAYER_ONE) {
-					playerOne.update((state) => ({ ...state, playerOnePoint: state.playerOnePoint + 1 }));
+					playerOnePoint.update((state) => state + 1);
 				} else if (currentPlayer === PLAYER_TURN.PLAYER_TWO) {
-					playerTwo.update((state) => ({ ...state, playerTwoPoint: state.playerTwoPoint + 1 }));
+					playerTwoPoint.update((state) => state + 1);
 				}
 
 				validateMatchedCards();
@@ -116,7 +116,7 @@
 	};
 
 	function updateTurn() {
-		if ($playerTurn === PLAYER_TURN.PLAYER_ONE) {
+		if (isPlayerOneTurn) {
 			validateTurn(PLAYER_TURN.PLAYER_ONE);
 		} else {
 			validateTurn(PLAYER_TURN.PLAYER_TWO);
@@ -125,15 +125,17 @@
 
 	const onHandleStopButton = () => {
 		gameStatus.set(GAME_STATE.GAME_OFF);
-		choices.set({ choiceOne: null, choiceTwo: null });
-		playerOne.set({ playerOnePoint: 0, playerOneTurn: null });
-		playerTwo.set({ playerTwoPoint: 0, playerTwoTurn: null });
+		choiceOne.set(null);
+		choiceTwo.set(null);
+		playerOneTurn.set(0);
+		playerTwoTurn.set(0);
+		playerOnePoint.set(0);
+		playerTwoPoint.set(0);
 	};
 
 	onMount(() => {
 		// Initial effect
-		console.log('choices', $choices);
-		console.log('cards', $cards);
+
 		updateTurn();
 	});
 
@@ -141,7 +143,14 @@
 		// Effect when choiceOne or choiceTwo changes
 		updateTurn();
 	});
-	console.log('isGameOff', isGameOff);
+
+	$: {
+		if ($playerTurn === PLAYER_TURN.PLAYER_ONE) {
+			validateTurn(PLAYER_TURN.PLAYER_ONE);
+		} else {
+			validateTurn(PLAYER_TURN.PLAYER_TWO);
+		}
+	}
 </script>
 
 <svelte:head>
@@ -159,12 +168,12 @@
 		<PlayerTurns
 			playerOneName="Player One"
 			playerTwoName="Player Two"
-			playerOneStats={$playerOne}
-			playerTwoStats={$playerTwo}
-			isPlayerOneTurn={$playerTurn === PLAYER_TURN.PLAYER_ONE &&
-				$gameStatus === GAME_STATE.ON_GOING}
-			isPlayerTwoTurn={$playerTurn === PLAYER_TURN.PLAYER_TWO &&
-				$gameStatus === GAME_STATE.ON_GOING}
+			playerOneTurn={$playerOneTurn}
+			playerTwoTurn={$playerTwoTurn}
+			playerOnePoint={$playerOnePoint}
+			playerTwoPoint={$playerTwoPoint}
+			{isPlayerOneTurn}
+			{isPlayerTwoTurn}
 		/>
 		{#if isGameOff}
 			<h4>Press Start and train your memory!</h4>
@@ -174,13 +183,19 @@
 					<Card
 						{card}
 						{onHandleCardClick}
-						flipped={card === $choices.choiceOne || card === $choices.choiceTwo || card.matched}
+						flipped={card === $choiceOne || card === $choiceTwo || card.matched}
 						disabled={$disabled}
 					/>
 				{/each}
 			</Board>
 		{/if}
-		<Message {allCardsUp} {playerOnePoint} {playerOneTurn} {playerTwoPoint} {playerTwoTurn} />
+		<Message
+			{allCardsUp}
+			playerOnePoint={$playerOnePoint}
+			playerOneTurn={$playerOneTurn}
+			playerTwoPoint={$playerTwoPoint}
+			playerTwoTurn={$playerTwoTurn}
+		/>
 	</div>
 </html>
 

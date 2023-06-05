@@ -1,10 +1,9 @@
 <script lang="ts">
 </script>
 
-<html lang="en">
-	<div class="self-center navbar bg-base-100">
-		<div class="navbar-start">
-			<!-- <div class="dropdown">
+<div class="self-center navbar bg-base-100">
+	<div class="navbar-start">
+		<!-- <div class="dropdown">
 				<label tabindex="0" class="btn btn-ghost btn-circle">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -29,11 +28,11 @@
 					<li><a>About</a></li>
 				</ul>
 			</div> -->
-			<p>Just some random shaite</p>
-		</div>
-		<div class="navbar-center">Memorization card game</div>
-		<div class="navbar-end">
-			<!-- <button class="btn btn-ghost btn-circle">
+		<p>Just some random shaite</p>
+	</div>
+	<div class="navbar-center">Memorization card game</div>
+	<div class="navbar-end">
+		<!-- <button class="btn btn-ghost btn-circle">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					class="w-5 h-5"
@@ -66,6 +65,5 @@
 					<span class="badge badge-xs badge-primary indicator-item" />
 				</div>
 			</button> -->
-		</div>
 	</div>
-</html>
+</div>

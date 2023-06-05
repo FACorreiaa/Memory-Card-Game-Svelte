@@ -1,58 +1,48 @@
 <script lang="ts">
-	type PlayerOneType = {
-		playerOnePoint: number;
-		playerOneTurn: number;
-	};
-
-	type PlayerTwoType = {
-		playerTwoPoint: number;
-		playerTwoTurn: number;
-	};
-
 	export let playerOneName: string;
 	export let playerTwoName: string;
 
-	export let playerOneStats: PlayerOneType;
-	export let playerTwoStats: PlayerTwoType;
+	export let playerOnePoint: number;
+	export let playerOneTurn: number;
+	export let playerTwoPoint: number;
+	export let playerTwoTurn: number;
 
 	export let isPlayerOneTurn: boolean;
 	export let isPlayerTwoTurn: boolean;
 </script>
 
-<html lang="en">
-	<div class="container">
-		<div class="row">
-			<div class="column">
-				<div class="player-container">
-					<h5 class="player-title">{playerOneName}</h5>
-					<div>
-						<span>Turns: {playerOneStats.playerOneTurn}</span>
-						<span>Points: {playerOneStats.playerOnePoint}</span>
-					</div>
-				</div>
-			</div>
-			<div class="column">
-				<div class="player-container">
-					<h5 class="player-title">{playerTwoName}</h5>
-					<div>
-						<span>Turns: {playerTwoStats.playerTwoTurn}</span>
-						<span>Points: {playerTwoStats.playerTwoPoint}</span>
-					</div>
+<div class="container">
+	<div class="row">
+		<div class="column">
+			<div class="player-container">
+				<h5 class="player-title">{playerOneName}</h5>
+				<div>
+					<span>Turns: {playerOneTurn}</span>
+					<span>Points: {playerOnePoint}</span>
 				</div>
 			</div>
 		</div>
-		{#if isPlayerOneTurn}
-			<div class="player-turn">PLAYER ONE TURN</div>
-		{:else}
-			<div />
-		{/if}
-		{#if isPlayerTwoTurn}
-			<div class="player-turn">PLAYER TWO TURN</div>
-		{:else}
-			<div />
-		{/if}
+		<div class="column">
+			<div class="player-container">
+				<h5 class="player-title">{playerTwoName}</h5>
+				<div>
+					<span>Turns: {playerTwoTurn}</span>
+					<span>Points: {playerTwoPoint}</span>
+				</div>
+			</div>
+		</div>
 	</div>
-</html>
+	{#if isPlayerOneTurn}
+		<div class="player-turn">PLAYER ONE TURN</div>
+	{:else}
+		<div />
+	{/if}
+	{#if isPlayerTwoTurn}
+		<div class="player-turn">PLAYER TWO TURN</div>
+	{:else}
+		<div />
+	{/if}
+</div>
 
 <style lang="postcss">
 	.container {
